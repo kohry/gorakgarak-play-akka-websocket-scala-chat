@@ -1,0 +1,52 @@
+@(implicit request: RequestHeader)
+@main("Welcome to Play")
+
+<script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
+
+<script>
+var socket = new WebSocket("@routes.HomeController.chat2.webSocketURL()")
+
+socket.onopen = function(e){ console.log("연결확인") } 
+socket.onmessage = function(e){ $("#chat_box").append("<p>" + e.data + "</p>") }
+
+$(document).ready(function() {
+
+	$("#btn_join").click(function() {
+		socket.send(JSON.stringify(
+                    { "type" : "join",
+                      "username" : $("#txt_join").val() } 
+                ))
+	});
+	
+	$("#btn_talk").click(function() {
+		socket.send(JSON.stringify(
+                    { "type" : "talk",
+                      "username" : $("#txt_join").val(),
+                      "msg" : $("#txt_talk").val() } 
+                ))
+	});	
+	
+	$("#btn_leave").click(function() {
+		socket.send(JSON.stringify(
+                    { "type" : "leave",
+                      "username" : $("#txt_join").val() } 
+                ))
+	});	
+	
+});
+
+
+
+</script>
+
+<body>
+
+별명 <input type = "text" id="txt_join"/>
+<button id="btn_join">join</button>
+
+<div id="chat_box"></div>
+
+<input type = "text" id="txt_talk"/>
+<button id="btn_talk">send</button>
+</body>
+<button id="btn_leave">leave</button>

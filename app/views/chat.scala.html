@@ -1,0 +1,24 @@
+@(implicit request: RequestHeader)
+@main("Welcome to Play")
+<script>
+var socket = new WebSocket("@routes.HomeController.chat.webSocketURL()")
+socket.onopen = function(e){
+		console.log(e)
+        console.log("연결")
+        
+        socket.send(JSON.stringify(
+                    { "type" : "join",
+                      "username" : "gorakgarak" } 
+                ))
+                
+                        socket.send(JSON.stringify(
+                    { "type" : "talk",
+                      "username" : "gorakgarak",
+                       "msg" : "hihihihihihithis"} 
+                ))
+}
+socket.onmessage = function(e){
+        console.log("서버로부터 데이터 받음!  : " + e.data)
+}
+</script>
+
